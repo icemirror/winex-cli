@@ -5,17 +5,6 @@ import { error } from "./logger";
 const semver = require("semver");
 const { getmaterialinfo } = require("@winfe/get-materials");
 
-class PackageNotFoundError extends Error {
-  constructor(pluginName: string) {
-    super(
-      `Package ${chalk.cyan(
-        pluginName
-      )} could not be found, please check the spelling right`
-    );
-    this.name = "PackageNotFoundError";
-  }
-}
-
 class RegularNotFoundError extends Error {
   constructor(pluginName: string, version: string) {
     super(
@@ -40,7 +29,10 @@ export class GetMaterial {
     const materialInfo = getmaterialinfo(this.pluginName);
 
     if (materialInfo.length <= 0) {
-      throw new PackageNotFoundError(this.pluginName);
+      error(`Package ${chalk.cyan(
+        this.pluginName
+      )} could not be found, please check the spelling right`);
+      process.exit(1);
     }
 
     let { dependencies, source } = materialInfo[0];
